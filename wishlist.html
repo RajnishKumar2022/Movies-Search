@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Movie Search</title>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        background-color: #0d0d0d;
+        color: wheat;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+        /* max-width: 1080px; */
+        width: 500px;
+    }
+
+    #heading {
+        margin: 10px;
+        margin-left: 40px;
+        font-weight: bolder;
+        font-size: 30px;
+        text-decoration: underline;
+    }
+
+    input {
+        width: 195px;
+        margin-top: 10px;
+        padding: 4px;
+        border: none;
+        /* color: wheat; */
+        color: black;
+        background-color: wheat;
+        border-radius: 3px;
+        padding-left: 12px;
+        text-decoration: none;
+
+    }
+
+    input::placeholder {
+        /* margin-left: 10px;
+    margin: 10px; */
+        padding-left: 0px;
+        color: #f50303;
+        font-style: italic;
+        opacity: 1;
+    }
+
+    button {
+        width: 60px;
+        height: 23px;
+        border: none;
+        background-color: chocolate;
+        cursor: pointer;
+        border-radius: 2px;
+        width: 160px;
+        margin-top: 10px;
+        margin-left: 38px;
+
+    }
+
+    button:hover {
+        background-color: rgb(226, 105, 19);
+        transform: scale(1.022222);
+        /* Button thoda bada ho jayega */
+    }
+
+    .card {
+        margin-top: 10px;
+        width: 260px;
+        height: 420px;
+        border: 1px solid white;
+        border-radius: 3px;
+        padding: 2px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        /* grid-template-columns: repeat(3); */
+        /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px; */
+        /* Adds spacing between items */
+    }
+
+    .title {
+        font-weight: bold;
+        font-family: Helvetica, sans-serif;
+        margin: 4px;
+    }
+
+
+    .release-year {
+        margin: 4px;
+        font-family: Helvetica;
+        font-weight: 700;
+
+    }
+
+    .rating {
+        margin: 4px;
+        font-family: Helvetica;
+        font-weight: 700;
+    }
+</style>
+
+<body>
+    <div id="heading">My Wishlist</div>
+    <button id="goto">Go to Search Page</button>
+    <div class="container">
+
+        <!--         
+        <div class="card">
+             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpkvQDacWUG52R1yM5Q-pN_uumKZWCgCI37Cyw-Iqedg&s=10"
+                alt="" id="poster-image" height="290" width="254">
+            <div class="title">Movie Title: Teesri Kasam</div>
+
+            <div class="release-year">Release Year: 1966</div>
+            <div class="rating">Rating: ⭐⭐⭐⭐⭐</div> 
+        </div>
+
+         -->
+    </div>
+
+
+</body>
+
+<script>
+
+    const container = document.querySelector(".container")
+    // const card = document.querySelector(".card")
+    // const rating = document.querySelector(".rating")
+    // const releaseYear = document.querySelector(".release-year")
+    // const posterImage = document.getElementById("poster-image")
+    const gotoSearchPageBtn = document.getElementById("goto")
+
+    const url = "http://www.omdbapi.com/?i=tt3896198&apikey=b18b95bd";
+
+    gotoSearchPageBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        window.location.href = "index.html"
+    })
+
+    async function listAllWishlistItems() {
+        // localStorage ki length tak loop chalayein
+        for (let i = 0; i < localStorage.length; i++) {
+            // Index ke hisab se Key ka naam nikalien
+            let key = localStorage.key(i);
+
+            // Us Key ki Value nikalien
+            let value = localStorage.getItem(key);
+
+            // Console me print karein
+            console.log(`Key: ${key} | Value: ${value}`);
+
+
+            const response = await fetch(`${url}&t=${value}`);
+
+            const data = await response.json();
+
+            const card = document.createElement("div")
+            card.classList.add("card")
+
+            const rating = document.createElement("div")
+            rating.classList.add("rating")
+
+            rating.innerHTML = `Rating On IMDB is : ${data?.imdbRating}`;
+
+            const posterImage = document.createElement("img")
+            posterImage.width = "254"
+            posterImage.height = "290"
+            posterImage.src = `${data?.Poster}`;
+
+            const title = document.createElement("div")
+            title.classList.add("title")
+            title.innerHTML = `Movie Title : ${data?.Title}`;
+
+            const releaseYear = document.createElement("div")
+            releaseYear.classList.add("release-year")
+            releaseYear.innerHTML = `Release Year : ${data?.Year}`;
+
+            card.append(posterImage, title, releaseYear, rating)
+            container.appendChild(card)
+        }
+    }
+
+    window.addEventListener("load", (e) => {
+        e.preventDefault()
+        listAllWishlistItems()
+    })
+
+</script>
+
+</html>
